@@ -15,6 +15,10 @@ app.use(express.json());
 //Base de datos
 dbConnection();
 
+//Directorio publico
+//Middleware para servir el html cuando alguien haga una peticion al backend. Cuando entro en localhost:3005 se sirve la pagina que esta en el directorio publico
+app.use(express.static('public'));
+
 //Rutas
 app.get('/', (req, res) => {
     res.json({
