@@ -5,10 +5,32 @@ const { generarJWT } = require('../helpers/jwt');
 
 const getUsuarios = async (req, res) => {
 
-    const usuarios = await Usuario.find();
+    const desde = Number(req.query.desde) || 0;//desde el cliente se envia el parametro asi localhost:3005/api/usuarios?desde=5
+
+    /*Se podria obtener los usuarios y el total de registros como esta aca abajo. En este caso se esta ejecutando una consulta a continuacion de la otra. Pero se puede dar el caso de
+    que ambas tarden mucho y esto no es conveniente*/
+    
+    // const usuarios = await Usuario
+    //     .find({}, 'nombre email role google')
+    //     .skip(desde) //se salta todos los registros que estan antes de 'desde'
+    //     .limit(5);
+
+    // const total = await Usuario.count();//total de registros en la DB
+
+    //esto hace que ambas consultas se ejecuten simultaneamente y cuando obtengamos el resultado de ambas las recuperamos en las respectivas posiciones del arreglo
+    //Se hace uso de la desestructuracion en javascript
+    const [usuarios, total] = await Promise.all([
+        Usuario
+            .find({}, 'nombre email role google img')
+            .skip(desde) //se salta todos los registros que estan antes de 'desde'
+            .limit(5),
+        Usuario.countDocuments()//total de registros en la DB
+    ]);
+
     res.json({
         ok: true,
-        usuarios
+        usuarios,
+        total
     });
 }
 
