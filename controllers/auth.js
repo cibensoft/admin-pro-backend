@@ -52,7 +52,7 @@ const googleSignIn = async (req, res = response) => {
         const usuarioDB = await Usuario.findOne({ email });
         let usuario;
 
-        if ( !usuarioDB ) {
+        if (!usuarioDB) {
             //No existe usuario
             usuario = new Usuario({
                 nombre: name,
@@ -87,7 +87,21 @@ const googleSignIn = async (req, res = response) => {
     }
 }
 
+const renewToken = async (req, res = response) => {
+
+    const uid = req.uid;
+    
+    //Generar JWT
+    const token = await generarJWT(uid);
+
+    res.json({
+        ok: true,
+        token
+    })
+}
+
 module.exports = {
     login,
     googleSignIn,
+    renewToken,
 }

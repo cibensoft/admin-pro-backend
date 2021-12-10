@@ -16,15 +16,20 @@ router.post('/',
     [
         validarJWT,
         check('nombre', 'el nombre del medico es requerido').not().isEmpty(),
-        check('hospital','El ID del hospital debe ser valido').isMongoId(),//Se valida que el ID que viene, sea un ID de mongoDB valido. No valida que el ID exista! Solo valida la estructura
+        check('hospital', 'El ID del hospital debe ser valido').isMongoId(),//Se valida que el ID que viene, sea un ID de mongoDB valido. No valida que el ID exista! Solo valida la estructura
         validarCampos
     ],
     crearMedico);
 
 router.put('/:id',
-    [],
+    [
+        validarJWT,
+        check('nombre', 'el nombre del medico es requerido').not().isEmpty(),
+        check('hospital', 'El ID del hospital debe ser valido').isMongoId(),//Se valida que el ID que viene, sea un ID de mongoDB valido. No valida que el ID exista! Solo valida la estructura
+        validarCampos
+    ],
     actualizarMedico);
 
-router.delete('/:id', borrarMedico);
+router.delete('/:id', validarJWT, borrarMedico);
 
 module.exports = router;
