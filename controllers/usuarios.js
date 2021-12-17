@@ -9,7 +9,7 @@ const getUsuarios = async (req, res) => {
 
     /*Se podria obtener los usuarios y el total de registros como esta aca abajo. En este caso se esta ejecutando una consulta a continuacion de la otra. Pero se puede dar el caso de
     que ambas tarden mucho y esto no es conveniente*/
-    
+
     // const usuarios = await Usuario
     //     .find({}, 'nombre email role google')
     //     .skip(desde) //se salta todos los registros que estan antes de 'desde'
@@ -43,7 +43,7 @@ const crearUsuario = async (req, res = response) => {
         if (existeEmail) {
             return res.status(400).json({
                 ok: false,
-                mgs: 'El correo ya esta registrado'
+                msg: 'El correo ya esta registrado'
             });
         }
 
@@ -102,7 +102,16 @@ const actualizarUsuario = async (req, res = response) => {
             }
         }
 
-        campos.email = email;
+        if (!usuarioDB.google) {
+            campos.email = email;
+        }
+        else if (usuarioDB.email !== email) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Usuario de Google no puede cambiar su correo'
+            })
+        }
+
         console.log('campos fin', campos);
         const usuarioActualizado = await Usuario.findByIdAndUpdate(uid, campos, { new: true });//Si no pongo { new: true }, mongoose me regresa el usuario tal cual estaba antes de la actualizacion
 
