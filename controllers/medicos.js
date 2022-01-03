@@ -14,6 +14,31 @@ const getMedicos = async (req, res = response) => {//res = response es para obte
     });
 }
 
+const getMedicoById = async (req, res = response) => {//res = response es para obtener el tipado en la respuesta
+
+    const id = req.params.id;
+
+    try {
+        //populate permite hacer referencia a documentos en otras colecciones
+        const medico = await Medico.findById(id)
+            .populate('usuario', 'nombre img')
+            .populate('hospital');
+
+        res.json({
+            ok: true,
+            medico
+        });
+    } catch (error) {
+        console.log(error);
+        res.json({
+            ok: false,
+            msg: 'Hable con el administrador'
+        })
+    }
+
+
+}
+
 const crearMedico = async (req, res = response) => {
     /*res = response es para obtener el tipado en la respuesta. 
     Seria analogo a hacer lo siguiente:
@@ -110,6 +135,7 @@ const borrarMedico = async (req, res = response) => {//res = response es para ob
 
 module.exports = {
     getMedicos,
+    getMedicoById,
     crearMedico,
     actualizarMedico,
     borrarMedico,

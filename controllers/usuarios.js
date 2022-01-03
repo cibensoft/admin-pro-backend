@@ -130,6 +130,7 @@ const actualizarUsuario = async (req, res = response) => {
 
 const borrarUsuario = async (req, res = response) => {
     const uid = req.params.id;
+    
     try {
 
         const usuarioDB = await Usuario.findById(uid);
