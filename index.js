@@ -2,6 +2,7 @@ const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
 const { dbConnection } = require('./database/config');
+const path = require('path');
 
 //Crear el servidor de express
 const app = express();
@@ -35,6 +36,11 @@ app.use('/api/medicos', require('./routes/medicos'));
 app.use('/api/todo', require('./routes/busquedas'));
 app.use('/api/upload', require('./routes/uploads'));
 app.use('/api/login', require('./routes/auth'));
+
+//cualquier otra ruta que no sean las anteriores caera por aca. Esto es para evitar que al recargar el navegador muestre el error Cannot GET /pagina
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'public/index.html'));
+})
 
 app.listen(process.env.PORT, () => {
     console.log('Server on port ' + process.env.PORT);
